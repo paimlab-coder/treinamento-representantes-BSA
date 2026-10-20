@@ -6,12 +6,12 @@
 <title>Treinamento SDR/BDR - Bertolini</title>
 
 <style>
-/* Reset básico e definição das variáveis de cor da paleta */
 :root {
-    --azul-bertolini: #06418a; /* HEX fornecido */
-    --laranja-bertolini: #F820A; /* HEX fornecido - Nota: Geralmente HEX tem 6 dígitos. Usando o fornecido. Se não funcionar, tente #FF8C0A */
-    --laranja-rgb: 255, 140, 10; /* RGB fornecido para opacidade */
-    --texto-claro: #ffffff;
+    --azul-bertolini: #06418a;
+    --laranja-bertolini: #f8820a;
+    --laranja-light: #ff9e3b;
+    --bg-overlay: rgba(6, 65, 138, 0.85);
+    --card-bg: rgba(255, 255, 255, 0.92);
 }
 
 * {
@@ -22,198 +22,396 @@
 }
 
 body {
-    /* Adiciona a imagem de fundo fornecida */
     background-image: url('https://www.bertolini.com.br/uploads/knsc8mg2fl1exd28124z.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    color: var(--texto-claro);
+    color: #333;
     min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
 }
 
-/* Camada de sobreposição azul para dar o tom da marca sobre a foto */
+/* Camada Azul sobre a Imagem de Fundo */
 body::before {
     content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: var(--bg-overlay);
+    z-index: -2;
+}
+
+/* Canvas do Efeito Matrix */
+#matrixCanvas {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(6, 65, 138, 0.85); /* Azul com transparência */
     z-index: -1;
+    pointer-events: none;
+    opacity: 0.35;
 }
 
 header {
-    text-align: center;
-    padding: 40px 20px;
+    background: rgba(6, 65, 138, 0.95);
+    color: white;
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 3px solid var(--laranja-bertolini);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
-/* Estilização do título principal em Laranja */
-header h1 {
+.header-title h1 {
+    font-size: 26px;
+    color: #fff;
+}
+
+.header-title p {
+    font-size: 14px;
     color: var(--laranja-bertolini);
-    font-size: 32px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 10px;
+    font-weight: 600;
 }
 
-header p {
-    font-size: 16px;
-    opacity: 0.9;
+.header-logo img {
+    height: 45px;
 }
 
 .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 0 20px 60px 20px;
+    max-width: 1400px;
+    margin: 30px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
 }
 
-/* Estilo dos Cards Centralizados com efeito Glassmorphism (Transparência) */
+/* Layout dos Cards */
 .card {
-    background: rgba(255, 255, 255, 0.1); /* Fundo branco muito transparente */
-    border: 1px solid rgba(255, 255, 255, 0.2); /* Borda sutil */
-    border-radius: 15px;
-    padding: 30px;
-    margin-bottom: 25px;
-    backdrop-filter: blur(10px); /* Efeito de desfoque no fundo do card */
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 22px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    border-top: 4px solid var(--laranja-bertolini);
+    backdrop-filter: blur(5px);
+    height: fit-content;
 }
 
-/* Títulos dos cards em Laranja */
+.card-span-2 {
+    grid-column: span 2;
+}
+
+.card-span-3 {
+    grid-column: span 3;
+}
+
 .card h2 {
-    color: var(--laranja-bertolini);
-    font-size: 24px;
-    margin-bottom: 20px;
-    border-bottom: 2px solid rgba(255, 140, 10, 0.3); /* Linha sutil laranja */
-    padding-bottom: 10px;
+    color: var(--azul-bertolini);
+    font-size: 20px;
+    margin-bottom: 12px;
+    border-bottom: 2px solid var(--laranja-bertolini);
+    padding-bottom: 6px;
 }
 
-.card p {
-    margin-bottom: 15px;
-    line-height: 1.6;
+/* Fluxo Visual */
+.fluxo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+.etapa {
+    background: var(--azul-bertolini);
+    color: white;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    border-bottom: 2px solid var(--laranja-bertolini);
+}
+
+.arrow {
+    font-size: 18px;
+    color: var(--laranja-bertolini);
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+
+.regra {
+    background: #e8f4fd;
+    border-left: 5px solid var(--azul-bertolini);
+    padding: 12px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.alerta {
+    background: #fff3e6;
+    border-left: 5px solid var(--laranja-bertolini);
+    padding: 12px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.erro {
+    background: #fdecea;
+    border-left: 5px solid #f44336;
+    padding: 12px;
+    margin-top: 10px;
+    font-size: 14px;
 }
 
 ul {
-    list-style-position: inside;
-    margin-left: 10px;
+    margin-left: 18px;
+    font-size: 14px;
 }
 
 li {
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
 
-/* Estilização dos inputs do Quiz para combinar com o fundo escuro */
-.quiz-group {
-    margin-bottom: 20px;
+/* Quiz Style */
+.pergunta {
+    margin-bottom: 15px;
+    font-size: 14px;
 }
 
-.quiz-group label {
+.pergunta label {
     display: block;
-    margin-bottom: 8px;
-    color: var(--laranja-bertolini);
-    font-weight: bold;
-}
-
-input[type="text"] {
-    width: 100%;
-    padding: 12px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
-    color: white;
-    font-size: 16px;
-}
-
-input[type="text"]:focus {
-    outline: none;
-    border-color: var(--laranja-bertolini);
-    box-shadow: 0 0 10px rgba(255, 140, 10, 0.5);
-}
-
-/* Botão em Laranja */
-.btn-quiz {
-    background-color: var(--laranja-bertolini);
-    color: var(--azul-bertolini);
-    border: none;
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 8px;
+    margin-top: 4px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
 }
 
-.btn-quiz:hover {
-    background-color: #ffaa4f; /* Laranja mais claro no hover */
-    transform: translateY(-2px);
+button {
+    background: var(--azul-bertolini);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    border-bottom: 3px solid var(--laranja-bertolini);
+    transition: all 0.2s;
+}
+
+button:hover {
+    background: var(--laranja-bertolini);
+    color: white;
+}
+
+.resultado {
+    margin-top: 12px;
+    font-weight: bold;
+    color: var(--azul-bertolini);
 }
 
 footer {
+    background: var(--azul-bertolini);
+    color: white;
     text-align: center;
-    padding: 30px;
-    font-size: 14px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    margin-top: 40px;
+    border-top: 3px solid var(--laranja-bertolini);
 }
 
-/* Responsividade simples */
-@media (max-width: 600px) {
-    header h1 { font-size: 24px; }
-    .card { padding: 20px; }
+footer img {
+    height: 35px;
+    margin-bottom: 8px;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+    .container { grid-template-columns: repeat(2, 1fr); }
+    .card-span-2, .card-span-3 { grid-column: span 2; }
+}
+
+@media (max-width: 768px) {
+    .container { grid-template-columns: 1fr; }
+    .card-span-2, .card-span-3 { grid-column: span 1; }
+    header { flex-direction: column; text-align: center; gap: 15px; }
 }
 </style>
 </head>
+
 <body>
 
+<canvas id="matrixCanvas"></canvas>
+
 <header>
-    <h1>Treinamento SDR/BDR</h1>
-    <p>Fluxo de Leads, Conversão e Geração de Oportunidades (OP)</p>
+    <div class="header-title">
+        <h1>Treinamento SDR/BDR</h1>
+        <p>Fluxo de Leads, Conversão e Geração de Oportunidades (OP)</p>
+    </div>
+    <div class="header-logo">
+        <img src="https://www.bertolini.com.br/uploads/knsc8mg2fl1exd28124z.jpg" alt="Logo Bertolini">
+    </div>
 </header>
 
 <div class="container">
 
     <!-- Card Objetivo -->
-    <div class="card">
+    <div class="card card-span-2">
         <h2>Objetivo</h2>
         <p>Padronizar a entrada, o acompanhamento e a conversão de Leads, garantindo rastreabilidade da origem, continuidade do pipeline e mensuração correta dos indicadores comerciais.</p>
+        
+        <div class="fluxo">
+            <div class="etapa">Lead</div><div class="arrow">➔</div>
+            <div class="etapa">Qualificação</div><div class="arrow">➔</div>
+            <div class="etapa">Conversão</div><div class="arrow">➔</div>
+            <div class="etapa">Conta/Contato</div><div class="arrow">➔</div>
+            <div class="etapa">Nova OP</div><div class="arrow">➔</div>
+            <div class="etapa">Follow-up</div>
+        </div>
+
+        <div class="regra">
+            <strong>Regra de Ouro:</strong> Se entrou como Lead, siga como Lead até a Conversão.
+        </div>
     </div>
 
-    <!-- Card Checklist -->
+    <!-- Regra da Origem -->
     <div class="card">
-        <h2>Checklist</h2>
-        <p>Checklist a entrar de das a Leads, condições de tratativas comerciais.</p>
+        <h2>Regra da Origem</h2>
+        <p style="font-size: 13px;">A origem deve refletir o último canal ou contato que ajudou a amadurecer a negociação.</p>
+        <ul style="margin-top: 8px;">
+            <li>WhatsApp / Evento</li>
+            <li>Inbound / Outbound</li>
+            <li>Carteira / Indicação / Reativação</li>
+        </ul>
+        <div class="alerta">
+            <strong>Atenção:</strong> Preencha a origem manualmente na OP até atualização do sistema.
+        </div>
+    </div>
+
+    <!-- Passo 1 e 2 -->
+    <div class="card">
+        <h2>Passo 1 - Criação do Lead</h2>
         <ul>
-            <li>Verificar origem do Lead.</li>
-            <li>Confirmar dados de contato.</li>
-            <li>Classificar temperatura do Lead.</li>
-            <li>Agendar próximo passo no CRM.</li>
+            <li>Criar o Lead no Força de Vendas.</li>
+            <li>Vincular SDR/BDR e Supervisor.</li>
+            <li>Preencher a Origem corretamente.</li>
+            <li>Formalizar entrada por e-mail.</li>
         </ul>
     </div>
 
-    <!-- Card Quiz (Simulação baseada na imagem) -->
     <div class="card">
-        <h2>Quiz</h2>
-        
-        <div class="quiz-group">
-            <label for="input1">Pergunta Exemplo 1:</label>
-            <input type="text" id="input1" placeholder="Sua resposta...">
-        </div>
+        <h2>Passo 2 - Contato WhatsApp</h2>
+        <p style="font-size: 13px; margin-bottom: 8px;">Registre toda interação no CRM:</p>
+        <ul>
+            <li>O que ocorreu & Status atual.</li>
+            <li>Pendências & Próxima ação.</li>
+            <li>Responsável & Prazo.</li>
+        </ul>
+    </div>
 
-        <div class="quiz-group">
-            <label for="input2">Pergunta Exemplo 2:</label>
-            <input type="text" id="input2" placeholder="Sua resposta...">
-        </div>
+    <!-- Regra Crítica -->
+    <div class="card">
+        <h2>Regra Crítica</h2>
+        <div class="regra">✅ <strong>Correto:</strong> Lead ➔ Qualificação ➔ Conversão ➔ Conta/Contato ➔ Nova OP</div>
+        <div class="erro">❌ <strong>Incorreto:</strong> Lead em andamento ➔ Criação direta de OP</div>
+    </div>
 
-        <button class="btn-quiz">Corrigir Quiz</button>
+    <!-- Conta/Contato Existente -->
+    <div class="card">
+        <h2>Conta/Contato Existente</h2>
+        <p style="font-size: 13px;">Mesmo com cadastro existente, um novo Lead originado por SDR/BDR deve seguir todo o pipeline.</p>
+        <div class="regra" style="margin-top: 8px;">
+            <strong>Conta/Contato:</strong> Cadastro e relacionamento<br>
+            <strong>Lead + OP:</strong> Indicadores mensuráveis
+        </div>
+    </div>
+
+    <!-- Checklist -->
+    <div class="card">
+        <h2>Checklist</h2>
+        <ul>
+            <li>✅ Origem preenchida?</li>
+            <li>✅ Interação registrada?</li>
+            <li>✅ Próxima ação e prazo definidos?</li>
+            <li>✅ Lead convertido antes da OP?</li>
+        </ul>
+    </div>
+
+    <!-- Quiz -->
+    <div class="card">
+        <h2>Quiz de Fixação</h2>
+        <div class="pergunta">
+            <strong>1. Um Lead evoluiu. O correto é:</strong>
+            <label><input type="radio" name="q1" value="0"> Criar OP direta</label>
+            <label><input type="radio" name="q1" value="1"> Converter Lead e depois criar OP</label>
+        </div>
+        <div class="pergunta">
+            <strong>2. Existe Conta/Contato. Surge novo Lead:</strong>
+            <label><input type="radio" name="q2" value="0"> Ignorar Lead</label>
+            <label><input type="radio" name="q2" value="1"> Seguir pipeline até conversão</label>
+        </div>
+        <button type="button" onclick="corrigirQuiz()">Corrigir Quiz</button>
+        <div id="resultado" class="resultado"></div>
     </div>
 
 </div>
 
 <footer>
-    Treinamento SDR/BDR • Fluxo CRM Força de Vendas • BSA • Bertolini
+    <img src="https://www.bertolini.com.br/uploads/knsc8mg2fl1exd28124z.jpg" alt="Bertolini"><br>
+    Treinamento SDR/BDR • Fluxo CRM Força de Vendas • BSA
 </footer>
+
+<script>
+/* Efeito Matrix em Laranja e Azul */
+const canvas = document.getElementById('matrixCanvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789AZ';
+const fontSize = 14;
+const columns = Math.floor(canvas.width / fontSize);
+const rainDrops = Array(columns).fill(1);
+
+function drawMatrix() {
+    ctx.fillStyle = 'rgba(6, 65, 138, 0.15)'; // Fundo Azul transparente
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < rainDrops.length; i++) {
+        const text = katakana.charAt(Math.floor(Math.random() * katakana.length));
+        
+        // Alterna cores dos caracteres entre Laranja e Azul claro
+        if (Math.random() > 0.85) {
+            ctx.fillStyle = '#ff9e3b'; // Laranja brilhante
+        } else if (Math.random() > 0.5) {
+            ctx.fillStyle = '#f8820a'; // Laranja Bertolini
+        } else {
+            ctx.fillStyle = '#64a2f0'; // Azul claro Matrix
+        }
+
+        ctx.font = fontSize + 'px monospace';
+        ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+
+        if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            rainDrops[i] = 0;
+        }
+        rainDrops[i]++;
+    }
+}
+setInterval(drawMatrix, 35);
+
+/* Lógica do Quiz */
+function corrigirQuiz(){
+    let total = 0;
+    if(document.querySelector('input[name="q1"]:checked')?.value == 1) total++;
+    if(document.querySelector('input[name="q2"]:checked')?.value == 1) total++;
+    document.getElementById("resultado").innerHTML = "Você acertou " + total + " de 2 questões.";
+}
+</script>
 
 </body>
 </html>
