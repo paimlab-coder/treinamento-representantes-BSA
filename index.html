@@ -1,54 +1,709 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Treinamento SDR/BDR - Bertolini Sistemas de Armazenagem</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-<style>
-:root{--azul-bertolini:#06418a;--azul-dark:#032552;--azul-glow:#1a62bf;--laranja-bertolini:#f8820a;--laranja-light:#ff9e3b;--laranja-glow:#ffa94d;--bg-overlay:rgba(3,37,82,.88);--card-bg:rgba(255,255,255,.95);--text-main:#1f2937;--text-muted:#6b7280;--border-radius:12px}
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
-body{background-image:url('https://www.bertolini.com.br/uploads/knsc8mg2fl1exd28124z.jpg');background-size:cover;background-position:center;background-attachment:fixed;color:var(--text-main);min-height:100vh;position:relative;overflow-x:hidden}
-body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(3,37,82,.92) 0%,rgba(6,65,138,.85) 100%);z-index:-2}
-#matrixCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;opacity:.35}
-header{background:rgba(3,37,82,.95);color:#fff;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:4px solid var(--laranja-bertolini);box-shadow:0 4px 25px rgba(0,0,0,.4);position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
-.header-title h1{font-size:24px;font-weight:800;letter-spacing:-.5px;color:#fff;display:flex;align-items:center;gap:10px}.header-title p{font-size:13px;color:var(--laranja-light);font-weight:600;margin-top:2px}.header-logo{background:#fff;padding:6px 14px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.2);display:flex;align-items:center}.header-logo img{height:42px;width:auto;object-fit:contain}
-.wrapper{max-width:1600px;margin:30px auto;padding:0 20px;display:flex;gap:24px;align-items:flex-start}.side-panel{width:270px;flex-shrink:0;display:flex;flex-direction:column;gap:20px;position:sticky;top:100px}.panel-title{background:var(--azul-dark);color:#fff;padding:12px 16px;border-radius:8px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;border-left:4px solid var(--laranja-bertolini);box-shadow:0 4px 15px rgba(0,0,0,.25);text-align:center}
-.product-card{background:var(--card-bg);border-radius:var(--border-radius);overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.25);border-top:4px solid var(--laranja-bertolini);transition:all .3s cubic-bezier(.165,.84,.44,1);text-decoration:none;color:inherit;display:block}.product-card:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(248,130,10,.35)}.product-card-img-wrapper{width:100%;height:140px;overflow:hidden;position:relative}.product-card img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}.product-card:hover img{transform:scale(1.08)}.product-info{padding:12px 14px}.product-info h3{font-size:14px;color:var(--azul-bertolini);font-weight:700;margin-bottom:4px}.product-info p{font-size:11.5px;color:var(--text-muted);line-height:1.4}.product-tag{display:inline-block;margin-top:8px;font-size:10px;font-weight:700;color:var(--laranja-bertolini);background:rgba(248,130,10,.1);padding:3px 8px;border-radius:4px;text-transform:uppercase}
-.container{flex-grow:1;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.card{background:var(--card-bg);border-radius:var(--border-radius);padding:24px;box-shadow:0 10px 30px rgba(0,0,0,.25);border-top:4px solid var(--laranja-bertolini);backdrop-filter:blur(8px);height:fit-content}.card-span-2{grid-column:span 2}.card-span-3{grid-column:span 3}.card h2{color:var(--azul-bertolini);font-size:18px;font-weight:700;margin-bottom:14px;border-bottom:2px solid rgba(248,130,10,.3);padding-bottom:8px;display:flex;align-items:center;gap:8px}
-.fluxo{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;margin:18px 0}.etapa{background:var(--azul-bertolini);color:#fff;padding:10px 14px;border-radius:8px;font-size:12.5px;font-weight:700;box-shadow:0 4px 10px rgba(6,65,138,.3);border-bottom:3px solid var(--laranja-bertolini)}.arrow{font-size:16px;color:var(--laranja-bertolini);font-weight:bold}
-.regra,.alerta,.erro{padding:14px;margin-top:12px;font-size:13.5px;border-radius:0 8px 8px 0;line-height:1.5}.regra{background:#eef6ff;border-left:5px solid var(--azul-bertolini);color:#1e3a8a}.alerta{background:#fff8f0;border-left:5px solid var(--laranja-bertolini);color:#9a3412}.erro{background:#fef2f2;border-left:5px solid #ef4444;color:#991b1b}ul{margin-left:18px;font-size:13.5px;color:var(--text-main)}li{margin-bottom:8px;line-height:1.4}
-.pergunta{margin-bottom:16px;font-size:13.5px;background:#f8fafc;padding:12px 14px;border-radius:8px;border:1px solid #e2e8f0}.pergunta strong{color:var(--azul-bertolini);display:block;margin-bottom:8px}.pergunta label{display:flex;align-items:center;gap:8px;margin-top:6px;cursor:pointer;font-size:13px;color:var(--text-main);transition:color .2s}.pergunta label:hover{color:var(--laranja-bertolini)}button.btn-quiz{background:linear-gradient(135deg,var(--azul-bertolini) 0%,var(--azul-dark) 100%);color:#fff;border:none;padding:12px 20px;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px;width:100%;box-shadow:0 4px 12px rgba(6,65,138,.3);border-bottom:3px solid var(--laranja-bertolini);transition:all .2s ease}button.btn-quiz:hover{background:linear-gradient(135deg,var(--laranja-bertolini) 0%,#d96f02 100%);transform:translateY(-2px);box-shadow:0 6px 15px rgba(248,130,10,.4)}.resultado{margin-top:14px;padding:12px;border-radius:8px;font-weight:700;font-size:13.5px;text-align:center}.resultado.sucesso{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}.resultado.atencao{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
-footer{background:var(--azul-dark);color:#fff;text-align:center;padding:24px;margin-top:50px;border-top:4px solid var(--laranja-bertolini);display:flex;flex-direction:column;align-items:center;gap:12px}footer .footer-logo{background:#fff;padding:6px 16px;border-radius:8px}footer img{height:38px;width:auto}footer p{font-size:13px;color:#cbd5e1}
-@media(max-width:1300px){.side-panel{width:220px}.container{grid-template-columns:repeat(2,1fr)}.card-span-2{grid-column:span 2}}@media(max-width:1024px){.wrapper{flex-direction:column}.side-panel{width:100%;position:static;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}.panel-title{grid-column:1/-1}.container{grid-template-columns:1fr;width:100%}.card-span-2,.card-span-3{grid-column:span 1}}@media(max-width:640px){header{flex-direction:column;gap:14px;text-align:center;padding:16px}.header-title h1{font-size:20px;justify-content:center}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Treinamento SDR/BDR - Bertolini Sistemas de Armazenagem</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --azul-bertolini: #06418a;
+      --azul-dark: #032552;
+      --azul-glow: #1a62bf;
+      --laranja-bertolini: #f8820a;
+      --laranja-light: #ff9e3b;
+      --laranja-glow: #ffa94d;
+      --bg-overlay: rgba(3, 37, 82, 0.88);
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+      --border-radius: 12px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-image: url('https://www.bertolini.com.br/uploads/knsc8mg2fl1exd28124z.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(3, 37, 82, 0.92) 0%, rgba(6, 65, 138, 0.85) 100%);
+      z-index: -2;
+    }
+
+    #matrixCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.35;
+    }
+
+    header {
+      background: rgba(3, 37, 82, 0.95);
+      color: #fff;
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 4px solid var(--laranja-bertolini);
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+
+    .header-title h1 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-title p {
+      font-size: 13px;
+      color: var(--laranja-light);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .header-logo {
+      background: #fff;
+      padding: 6px 14px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+    }
+
+    .header-logo img {
+      height: 42px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .wrapper {
+      max-width: 1600px;
+      margin: 30px auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    .side-panel {
+      width: 270px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: sticky;
+      top: 100px;
+    }
+
+    .panel-title {
+      background: var(--azul-dark);
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      border-left: 4px solid var(--laranja-bertolini);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+      text-align: center;
+    }
+
+    .product-card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      border-top: 4px solid var(--laranja-bertolini);
+      transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(248, 130, 10, 0.35);
+    }
+
+    .product-card-img-wrapper {
+      width: 100%;
+      height: 140px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .product-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .product-card:hover img {
+      transform: scale(1.08);
+    }
+
+    .product-info {
+      padding: 12px 14px;
+    }
+
+    .product-info h3 {
+      font-size: 14px;
+      color: var(--azul-bertolini);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .product-info p {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .product-tag {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--laranja-bertolini);
+      background: rgba(248, 130, 10, 0.1);
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .container {
+      flex-grow: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      border-top: 4px solid var(--laranja-bertolini);
+      backdrop-filter: blur(8px);
+      height: fit-content;
+    }
+
+    .card-span-2 {
+      grid-column: span 2;
+    }
+
+    .card-span-3 {
+      grid-column: span 3;
+    }
+
+    .card h2 {
+      color: var(--azul-bertolini);
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      border-bottom: 2px solid rgba(248, 130, 10, 0.3);
+      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .fluxo {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+      margin: 18px 0;
+    }
+
+    .etapa {
+      background: var(--azul-bertolini);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      box-shadow: 0 4px 10px rgba(6, 65, 138, 0.3);
+      border-bottom: 3px solid var(--laranja-bertolini);
+    }
+
+    .arrow {
+      font-size: 16px;
+      color: var(--laranja-bertolini);
+      font-weight: bold;
+    }
+
+    .regra,
+    .alerta,
+    .erro {
+      padding: 14px;
+      margin-top: 12px;
+      font-size: 13.5px;
+      border-radius: 0 8px 8px 0;
+      line-height: 1.5;
+    }
+
+    .regra {
+      background: #eef6ff;
+      border-left: 5px solid var(--azul-bertolini);
+      color: #1e3a8a;
+    }
+
+    .alerta {
+      background: #fff8f0;
+      border-left: 5px solid var(--laranja-bertolini);
+      color: #9a3412;
+    }
+
+    .erro {
+      background: #fef2f2;
+      border-left: 5px solid #ef4444;
+      color: #991b1b;
+    }
+
+    ul {
+      margin-left: 18px;
+      font-size: 13.5px;
+      color: var(--text-main);
+    }
+
+    li {
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .pergunta {
+      margin-bottom: 16px;
+      font-size: 13.5px;
+      background: #f8fafc;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .pergunta strong {
+      color: var(--azul-bertolini);
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .pergunta label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text-main);
+      transition: color 0.2s;
+    }
+
+    .pergunta label:hover {
+      color: var(--laranja-bertolini);
+    }
+
+    button.btn-quiz {
+      background: linear-gradient(135deg, var(--azul-bertolini) 0%, var(--azul-dark) 100%);
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 14px;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(6, 65, 138, 0.3);
+      border-bottom: 3px solid var(--laranja-bertolini);
+      transition: all 0.2s ease;
+    }
+
+    button.btn-quiz:hover {
+      background: linear-gradient(135deg, var(--laranja-bertolini) 0%, #d96f02 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(248, 130, 10, 0.4);
+    }
+
+    .resultado {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13.5px;
+      text-align: center;
+    }
+
+    .resultado.sucesso {
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .resultado.atencao {
+      background: #fffbeb;
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+
+    footer {
+      background: var(--azul-dark);
+      color: #fff;
+      text-align: center;
+      padding: 24px;
+      margin-top: 50px;
+      border-top: 4px solid var(--laranja-bertolini);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    footer .footer-logo {
+      background: #fff;
+      padding: 6px 16px;
+      border-radius: 8px;
+    }
+
+    footer img {
+      height: 38px;
+      width: auto;
+    }
+
+    footer p {
+      font-size: 13px;
+      color: #cbd5e1;
+    }
+
+    @media (max-width: 1300px) {
+      .side-panel {
+        width: 220px;
+      }
+      .container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .card-span-2 {
+        grid-column: span 2;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .wrapper {
+        flex-direction: column;
+      }
+      .side-panel {
+        width: 100%;
+        position: static;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+      .panel-title {
+        grid-column: 1 / -1;
+      }
+      .container {
+        grid-template-columns: 1fr;
+        width: 100%;
+      }
+      .card-span-2,
+      .card-span-3 {
+        grid-column: span 1;
+      }
+    }
+
+    @media (max-width: 640px) {
+      header {
+        flex-direction: column;
+        gap: 14px;
+        text-align: center;
+        padding: 16px;
+      }
+      .header-title h1 {
+        font-size: 20px;
+        justify-content: center;
+      }
+    }
+  </style>
 </head>
 <body>
-<canvas id="matrixCanvas"></canvas>
-<header><div class="header-title"><h1>Treinamento SDR / BDR</h1><p>Fluxo de Leads, Conversão e Geração de Oportunidades (OP)</p></div><div class="header-logo"><img src="https://www.bertolini.com.br/uploads/knsc8mg2fl1exd28124z.jpg" alt="Bertolini Sistemas de Armazenagem"></div></header>
-<div class="wrapper">
-<aside class="side-panel"><div class="panel-title">Sistemas Estruturais</div>
-<div class="product-card"><div class="product-card-img-wrapper"><img src="https://www.bertoliniarmazenagem.com.br/wp-content/uploads/2025/01/Porta-Palete-Bertolini-SIstemas-de-Armazenagem-7-1024x681.webp" alt="Porta Paletes Bertolini"></div><div class="product-info"><h3>Porta Paletes</h3><p>Estrutura estática de acesso direto e versatilidade total.</p><span class="product-tag">Armazenagem Pesada</span></div></div>
-<div class="product-card"><div class="product-card-img-wrapper"><img src="https://www.bertoliniarmazenagem.com.br/wp-content/uploads/2025/01/Bases-Moveis-Bertolini-3-1024x683.webp" alt="Bases Móveis Bertolini"></div><div class="product-info"><h3>Bases Móveis</h3><p>Máxima densidade e otimização do espaço de estocagem.</p><span class="product-tag">Sistemas Compactos</span></div></div>
-</aside>
-<main class="container">
-<div class="card card-span-2"><h2>🎯 Objetivo do Processo</h2><p style="font-size:14px;line-height:1.5">Padronizar a entrada, qualificação e conversão de Leads, garantindo total rastreabilidade da origem, continuidade do pipeline de vendas e mensuração exata das métricas comerciais.</p><div class="fluxo"><div class="etapa">Lead</div><div class="arrow">➔</div><div class="etapa">Qualificação</div><div class="arrow">➔</div><div class="etapa">Conversão</div><div class="arrow">➔</div><div class="etapa">Conta / Contato</div><div class="arrow">➔</div><div class="etapa">Nova OP</div><div class="arrow">➔</div><div class="etapa">Follow-up</div></div><div class="regra"><strong>Regra de Ouro:</strong> Se a negociação entrou como Lead, permaneça no fluxo até a efetiva Conversão no CRM.</div></div>
-<div class="card"><h2>📍 Regra da Origem</h2><p style="font-size:13px;color:var(--text-muted)">A Origem deve registrar fielmente o último ponto de contato que amadureceu o atendimento:</p><ul style="margin-top:10px"><li>WhatsApp / Feira / Evento</li><li>Inbound Marketing / Outbound Active</li><li>Carteira / Indicação Direct / Reativação</li></ul><div class="alerta"><strong>Atenção:</strong> Insira a origem de forma manual na OP até atualização automatizada do CRM.</div></div>
-<div class="card"><h2>1️⃣ Passo 1 - Criação do Lead</h2><ul><li>Cadastrar o Lead no sistema Força de Vendas.</li><li>Vincular o SDR/BDR e o Supervisor Regional.</li><li>Preencher corretamente o campo Origem.</li><li>Formalizar o início da tratativa via e-mail.</li></ul></div>
-<div class="card"><h2>2️⃣ Passo 2 - Registros em WhatsApp</h2><p style="font-size:13px;margin-bottom:8px">Mantenha todos os registros detalhados no CRM:</p><ul><li>Resumo da interação &amp; Status atual.</li><li>Pendências levantadas &amp; Próxima ação.</li><li>Responsável designado &amp; Prazo combinado.</li></ul></div>
-<div class="card"><h2>⚠️ Regra Crítica do Pipeline</h2><div class="regra">✅ <strong>Fluxo Correto:</strong> Lead ➔ Qualificação ➔ Conversão ➔ Conta/Contato ➔ Nova OP</div><div class="erro">❌ <strong>Prática Incorreta:</strong> Lead ativo ➔ Geração direta de Oportunidade sem conversão previa</div></div>
-<div class="card"><h2>🏢 Conta e Contato Existente</h2><p style="font-size:13px;line-height:1.4">Mesmo que a empresa ou contato já possua cadastro ativo, novos projetos originados por SDR/BDR obrigatoriamente iniciam como Lead.</p><div class="regra" style="margin-top:10px"><strong>Conta/Contato:</strong> Manutenção de histórico e cadastro.<br><strong>Lead + OP:</strong> Mensuração justa de performance do SDR/BDR.</div></div>
-<div class="card"><h2>✅ Checklist do Processo</h2><ul><li>Origem cadastrada corretamente?</li><li>Interação documentada no CRM?</li><li>Próxima etapa e prazo estabelecidos?</li><li>Lead convertido antes da geração da OP?</li></ul></div>
-<div class="card"><h2>📝 Quiz de Avaliação</h2><div class="pergunta"><strong>1. Um Lead em andamento evoluiu para negociação. Qual a conduta exata?</strong><label><input type="radio" name="q1" value="0"> Criar uma Oportunidade (OP) direto</label><label><input type="radio" name="q1" value="1"> Converter o Lead e depois gerar a OP</label></div><div class="pergunta"><strong>2. Cliente antigo reativa contato via SDR. Como proceder no CRM?</strong><label><input type="radio" name="q2" value="0"> Pular a etapa de Lead e ir para OP</label><label><input type="radio" name="q2" value="1"> Tratar como Lead e seguir o pipeline integral</label></div><button type="button" class="btn-quiz" onclick="corrigirQuiz()">Validar Respostas</button><div id="resultado" class="resultado" style="display:none"></div></div>
-</main>
-<aside class="side-panel"><div class="panel-title">Sistemas Automatizados</div><div class="product-card"><div class="product-card-img-wrapper"><img src="https://www.bertoliniarmazenagem.com.br/wp-content/uploads/2025/01/Estrutura-para-Miniloads2.webp" alt="Miniloads Bertolini"></div><div class="product-info"><h3>Miniloads</h3><p>Armazenamento e transelevadores de alta velocidade para caixas.</p><span class="product-tag">Automação WMS</span></div></div><a href="https://www.bertoliniarmazenagem.com.br/produto/dinamico/" target="_blank" rel="noopener noreferrer" class="product-card"><div class="product-card-img-wrapper"><img src="https://www.bertoliniarmazenagem.com.br/wp-content/uploads/2025/01/Porta-Palete-Bertolini-SIstemas-de-Armazenagem-7-1024x681.webp" alt="Sistema Dinâmico Bertolini"></div><div class="product-info"><h3>Sistema Dinâmico 🔗</h3><p>Giro de estoque otimizado com gravidade (Método FIFO).</p><span class="product-tag">Saiba Mais no Site</span></div></a></aside>
-</div>
-<footer><div class="footer-logo"><img src="https://www.bertolini.com.br/uploads/knsc8mg2fl1exd28124z.jpg" alt="Bertolini"></div><p>Treinamento de SDR/BDR • CRM Força de Vendas • Bertolini Sistemas de Armazenagem</p></footer>
-<script>
-const canvas=document.getElementById('matrixCanvas'),ctx=canvas.getContext('2d');let rainDrops=[];const chars='BERTOLINI0123456789SDRBDRCRM',fontSize=13;function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;rainDrops=Array(Math.floor(canvas.width/fontSize)).fill(1)}resizeCanvas();window.addEventListener('resize',resizeCanvas);function drawMatrix(){ctx.fillStyle='rgba(3,37,82,.16)';ctx.fillRect(0,0,canvas.width,canvas.height);for(let i=0;i<rainDrops.length;i++){const text=chars.charAt(Math.floor(Math.random()*chars.length)),rand=Math.random();ctx.fillStyle=rand>.85?'#ff9e3b':rand>.5?'#f8820a':'#4182d6';ctx.font=fontSize+'px monospace';ctx.fillText(text,i*fontSize,rainDrops[i]*fontSize);if(rainDrops[i]*fontSize>canvas.height&&Math.random()>.975)rainDrops[i]=0;rainDrops[i]++}}setInterval(drawMatrix,38);
-function corrigirQuiz(){const q1=document.querySelector('input[name="q1"]:checked')?.value,q2=document.querySelector('input[name="q2"]:checked')?.value,resDiv=document.getElementById('resultado');resDiv.style.display='block';if(q1===undefined||q2===undefined){resDiv.className='resultado atencao';resDiv.innerHTML='⚠️ Por favor, selecione uma opção em todas as perguntas.';return}let acertos=0;if(q1==='1')acertos++;if(q2==='1')acertos++;if(acertos===2){resDiv.className='resultado sucesso';resDiv.innerHTML='🎉 Parabéns! Você acertou 2 de 2 perguntas (100%).'}else{resDiv.className='resultado atencao';resDiv.innerHTML=`⚠️ Você acertou ${acertos} de 2 perguntas. Revise as diretrizes do fluxo comercial.`}}
-</script>
+  <canvas id="matrixCanvas"></canvas>
+
+  <header>
+    <div class="header-title">
+      <h1>Treinamento SDR / BDR</h1>
+      <p>Fluxo de Leads, Conversão e Geração de Oportunidades (OP)</p>
+    </div>
+    <div class="header-logo">
+      <img src="https://www.bertolini.com.br/uploads/knsc8mg2fl1exd28124z.jpg" alt="Bertolini Sistemas de Armazenagem">
+    </div>
+  </header>
+
+  <div class="wrapper">
+    <aside class="side-panel">
+      <div class="panel-title">Sistemas Estruturais</div>
+      
+      <div class="product-card">
+        <div class="product-card-img-wrapper">
+          <img src="https://www.bertoliniarmazenagem.com.br/wp-content/uploads/2025/01/Porta-Palete-Bertolini-SIstemas-de-Armazenagem-7-1024x681.webp" alt="Porta Paletes Bertolini">
+        </div>
+        <div class="product-info">
+          <h3>Porta Paletes</h3>
+          <p>Estrutura estática de acesso direto e versatilidade total.</p>
+          <span class="product-tag">Armazenagem Pesada</span>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-card-img-wrapper">
+          <img src="https://www.bertoliniarmazenagem.com.br/wp-content/uploads/2025/01/Bases-Moveis-Bertolini-3-1024x683.webp" alt="Bases Móveis Bertolini">
+        </div>
+        <div class="product-info">
+          <h3>Bases Móveis</h3>
+          <p>Máxima densidade e otimização do espaço de estocagem.</p>
+          <span class="product-tag">Sistemas Compactos</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="container">
+      <div class="card card-span-2">
+        <h2>🎯 Objetivo do Processo</h2>
+        <p style="font-size:14px;line-height:1.5">
+          Padronizar a entrada, qualificação e conversão de Leads, garantindo total rastreabilidade da origem, continuidade do pipeline de vendas e mensuração exata das métricas comerciais.
+        </p>
+        <div class="fluxo">
+          <div class="etapa">Lead</div>
+          <div class="arrow">➔</div>
+          <div class="etapa">Qualificação</div>
+          <div class="arrow">➔</div>
+          <div class="etapa">Conversão</div>
+          <div class="arrow">➔</div>
+          <div class="etapa">Conta / Contato</div>
+          <div class="arrow">➔</div>
+          <div class="etapa">Nova OP</div>
+          <div class="arrow">➔</div>
+          <div class="etapa">Follow-up</div>
+        </div>
+        <div class="regra">
+          <strong>Regra de Ouro:</strong> Se a negociação entrou como Lead, permaneça no fluxo até a efetiva Conversão no CRM.
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>📍 Regra da Origem</h2>
+        <p style="font-size:13px;color:var(--text-muted)">
+          A Origem deve registrar fielmente o último ponto de contato que amadureceu o atendimento:
+        </p>
+        <ul style="margin-top:10px">
+          <li>WhatsApp / Feira / Evento</li>
+          <li>Inbound Marketing / Outbound Active</li>
+          <li>Carteira / Indicação Direct / Reativação</li>
+        </ul>
+        <div class="alerta">
+          <strong>Atenção:</strong> Insira a origem de forma manual na OP até atualização automatizada do CRM.
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>1️⃣ Passo 1 - Criação do Lead</h2>
+        <ul>
+          <li>Cadastrar o Lead no sistema Força de Vendas.</li>
+          <li>Vincular o SDR/BDR e o Supervisor Regional.</li>
+          <li>Preencher corretamente o campo Origem.</li>
+          <li>Formalizar o início da tratativa via e-mail.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>2️⃣ Passo 2 - Registros em WhatsApp</h2>
+        <p style="font-size:13px;margin-bottom:8px">Mantenha todos os registros detalhados no CRM:</p>
+        <ul>
+          <li>Resumo da interação &amp; Status atual.</li>
+          <li>Pendências levantadas &amp; Próxima ação.</li>
+          <li>Responsável designado &amp; Prazo combinado.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>⚠️ Regra Crítica do Pipeline</h2>
+        <div class="regra">
+          ✅ <strong>Fluxo Correto:</strong> Lead ➔ Qualificação ➔ Conversão ➔ Conta/Contato ➔ Nova OP
+        </div>
+        <div class="erro">
+          ❌ <strong>Prática Incorreta:</strong> Lead ativo ➔ Geração direta de Oportunidade sem conversão previa
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>🏢 Conta e Contato Existente</h2>
+        <p style="font-size:13px;line-height:1.4">
+          Mesmo que a empresa ou contato já possua cadastro ativo, novos projetos originados por SDR/BDR obrigatoriamente iniciam como Lead.
+        </p>
+        <div class="regra" style="margin-top:10px">
+          <strong>Conta/Contato:</strong> Manutenção de histórico e cadastro.<br>
+          <strong>Lead + OP:</strong> Mensuração justa de performance do SDR/BDR.
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>✅ Checklist do Processo</h2>
+        <ul>
+          <li>Origem cadastrada corretamente?</li>
+          <li>Interação documentada no CRM?</li>
+          <li>Próxima etapa e prazo estabelecidos?</li>
+          <li>Lead convertido antes da geração da OP?</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>📝 Quiz de Avaliação</h2>
+        <div class="pergunta">
+          <strong>1. Um Lead em andamento evoluiu para negociação. Qual a conduta exata?</strong>
+          <label><input type="radio" name="q1" value="0"> Criar uma Oportunidade (OP) direto</label>
+          <label><input type="radio" name="q1" value="1"> Converter o Lead e depois gerar a OP</label>
+        </div>
+        <div class="pergunta">
+          <strong>2. Cliente antigo reativa contato via SDR. Como proceder no CRM?</strong>
+          <label><input type="radio" name="q2" value="0"> Pular a etapa de Lead e ir para OP</label>
+          <label><input type="radio" name="q2" value="1"> Tratar como Lead e seguir o pipeline integral</label>
+        </div>
+        <button type="button" class="btn-quiz" onclick="corrigirQuiz()">Validar Respostas</button>
+        <div id="resultado" class="resultado" style="display:none"></div>
+      </div>
+    </main>
+
+    <aside class="side-panel">
+      <div class="panel-title">Sistemas Automatizados</div>
+      
+      <div class="product-card">
+        <div class="product-card-img-wrapper">
+          <img src="https://www.bertoliniarmazenagem.com.br/wp-content/uploads/2025/01/Estrutura-para-Miniloads2.webp" alt="Miniloads Bertolini">
+        </div>
+        <div class="product-info">
+          <h3>Miniloads</h3>
+          <p>Armazenamento e transelevadores de alta velocidade para caixas.</p>
+          <span class="product-tag">Automação WMS</span>
+        </div>
+      </div>
+
+      <a href="https://www.bertoliniarmazenagem.com.br/produto/dinamico/" target="_blank" rel="noopener noreferrer" class="product-card">
+        <div class="product-card-img-wrapper">
+          <img src="https://www.bertoliniarmazenagem.com.br/wp-content/uploads/2025/01/Porta-Palete-Bertolini-SIstemas-de-Armazenagem-7-1024x681.webp" alt="Sistema Dinâmico Bertolini">
+        </div>
+        <div class="product-info">
+          <h3>Sistema Dinâmico 🔗</h3>
+          <p>Giro de estoque otimizado com gravidade (Método FIFO).</p>
+          <span class="product-tag">Saiba Mais no Site</span>
+        </div>
+      </a>
+    </aside>
+  </div>
+
+  <footer>
+    <div class="footer-logo">
+      <img src="https://www.bertolini.com.br/uploads/knsc8mg2fl1exd28124z.jpg" alt="Bertolini">
+    </div>
+    <p>Treinamento de SDR/BDR • CRM Força de Vendas • Bertolini Sistemas de Armazenagem</p>
+  </footer>
+
+  <script>
+    // Efeito Matrix
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+    let rainDrops = [];
+    const chars = 'BERTOLINI0123456789SDRBDRCRM';
+    const fontSize = 13;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      rainDrops = Array(Math.floor(canvas.width / fontSize)).fill(1);
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(3, 37, 82, 0.16)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < rainDrops.length; i++) {
+        const text = chars.charAt(Math.floor(Math.random() * chars.length));
+        const rand = Math.random();
+        ctx.fillStyle = rand > 0.85 ? '#ff9e3b' : rand > 0.5 ? '#f8820a' : '#4182d6';
+        ctx.font = fontSize + 'px monospace';
+        ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+
+        if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          rainDrops[i] = 0;
+        }
+        rainDrops[i]++;
+      }
+    }
+
+    setInterval(drawMatrix, 38);
+
+    // Correção do Quiz
+    function corrigirQuiz() {
+      const q1 = document.querySelector('input[name="q1"]:checked')?.value;
+      const q2 = document.querySelector('input[name="q2"]:checked')?.value;
+      const resDiv = document.getElementById('resultado');
+
+      resDiv.style.display = 'block';
+
+      if (q1 === undefined || q2 === undefined) {
+        resDiv.className = 'resultado atencao';
+        resDiv.innerHTML = '⚠️ Por favor, selecione uma opção em todas as perguntas.';
+        return;
+      }
+
+      let acertos = 0;
+      if (q1 === '1') acertos++;
+      if (q2 === '1') acertos++;
+
+      if (acertos === 2) {
+        resDiv.className = 'resultado sucesso';
+        resDiv.innerHTML = '🎉 Parabéns! Você acertou 2 de 2 perguntas (100%).';
+      } else {
+        resDiv.className = 'resultado atencao';
+        resDiv.innerHTML = `⚠️ Você acertou ${acertos} de 2 perguntas. Revise as diretrizes do fluxo comercial.`;
+      }
+    }
+  </script>
 </body>
 </html>
