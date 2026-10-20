@@ -76,7 +76,9 @@ header {
 }
 
 .header-logo img {
-    height: 45px;
+    height: 50px;
+    width: auto;
+    display: block;
 }
 
 .container {
@@ -101,10 +103,6 @@ header {
 
 .card-span-2 {
     grid-column: span 2;
-}
-
-.card-span-3 {
-    grid-column: span 3;
 }
 
 .card h2 {
@@ -214,25 +212,29 @@ footer {
     background: var(--azul-bertolini);
     color: white;
     text-align: center;
-    padding: 20px;
+    padding: 25px 20px;
     margin-top: 40px;
     border-top: 3px solid var(--laranja-bertolini);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
 }
 
 footer img {
-    height: 35px;
-    margin-bottom: 8px;
+    height: 40px;
+    width: auto;
 }
 
 /* Responsividade */
 @media (max-width: 1024px) {
     .container { grid-template-columns: repeat(2, 1fr); }
-    .card-span-2, .card-span-3 { grid-column: span 2; }
+    .card-span-2 { grid-column: span 2; }
 }
 
 @media (max-width: 768px) {
     .container { grid-template-columns: 1fr; }
-    .card-span-2, .card-span-3 { grid-column: span 1; }
+    .card-span-2 { grid-column: span 1; }
     header { flex-direction: column; text-align: center; gap: 15px; }
 }
 </style>
@@ -356,8 +358,8 @@ footer img {
 </div>
 
 <footer>
-    <img src="https://www.bertolini.com.br/uploads/knsc8mg2fl1exd28124z.jpg" alt="Bertolini"><br>
-    Treinamento SDR/BDR • Fluxo CRM Força de Vendas • BSA
+    <img src="https://www.bertolini.com.br/uploads/knsc8mg2fl1exd28124z.jpg" alt="Logo Bertolini">
+    <p>Treinamento SDR/BDR • Fluxo CRM Força de Vendas • BSA</p>
 </footer>
 
 <script>
