@@ -6,143 +6,154 @@
 <title>Treinamento SDR/BDR - Fluxo de Leads e OPs</title>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Segoe UI, Arial, sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-body{
-    background:#f5f7fa;
-    color:#333;
-    line-height:1.6;
+body {
+    background: #f5f7fa;
+    color: #333;
+    line-height: 1.6;
 }
 
-header{
-    background:#0f4c81;
-    color:white;
-    padding:30px;
+header {
+    background: #0f4c81;
+    color: white;
+    padding: 30px;
 }
 
-header h1{
-    font-size:32px;
+header h1 {
+    font-size: 32px;
 }
 
-header p{
-    margin-top:10px;
+header p {
+    margin-top: 10px;
 }
 
-.container{
-    max-width:1200px;
-    margin:auto;
-    padding:30px;
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 30px;
 }
 
-.card{
-    background:white;
-    padding:25px;
-    margin-bottom:20px;
-    border-radius:12px;
-    box-shadow:0 3px 10px rgba(0,0,0,.08);
+.card {
+    background: white;
+    padding: 25px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,.08);
 }
 
-.card h2{
-    color:#0f4c81;
-    margin-bottom:15px;
+.card h2 {
+    color: #0f4c81;
+    margin-bottom: 15px;
 }
 
-.fluxo{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    justify-content:center;
+.fluxo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
 }
 
-.etapa{
-    background:#0f4c81;
-    color:white;
-    padding:15px;
-    border-radius:8px;
-    min-width:150px;
-    text-align:center;
-    font-weight:bold;
+.etapa {
+    background: #0f4c81;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    min-width: 150px;
+    text-align: center;
+    font-weight: bold;
 }
 
-.arrow{
-    font-size:24px;
-    color:#0f4c81;
-    display:flex;
-    align-items:center;
+.arrow {
+    font-size: 24px;
+    color: #0f4c81;
+    display: flex;
+    align-items: center;
 }
 
-.alerta{
-    background:#fff4e5;
-    border-left:6px solid #ff9800;
-    padding:15px;
-    margin-top:15px;
+.alerta {
+    background: #fff4e5;
+    border-left: 6px solid #ff9800;
+    padding: 15px;
+    margin-top: 15px;
 }
 
-.regra{
-    background:#e8f5e9;
-    border-left:6px solid #4caf50;
-    padding:15px;
-    margin-top:15px;
+.regra {
+    background: #e8f5e9;
+    border-left: 6px solid #4caf50;
+    padding: 15px;
+    margin-top: 15px;
 }
 
-.erro{
-    background:#fdecea;
-    border-left:6px solid #f44336;
-    padding:15px;
-    margin-top:15px;
+.erro {
+    background: #fdecea;
+    border-left: 6px solid #f44336;
+    padding: 15px;
+    margin-top: 15px;
 }
 
-ul{
-    margin-left:20px;
+ul {
+    margin-left: 20px;
 }
 
-.quiz{
-    margin-top:20px;
+.quiz {
+    margin-top: 20px;
 }
 
-.pergunta{
-    margin-bottom:25px;
+.pergunta {
+    margin-bottom: 25px;
 }
 
-button{
-    background:#0f4c81;
-    color:white;
-    border:none;
-    padding:12px 20px;
-    border-radius:6px;
-    cursor:pointer;
+button {
+    background: #0f4c81;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
 }
 
-button:hover{
-    background:#09365b;
+button:hover {
+    background: #09365b;
 }
 
-.resultado{
-    margin-top:20px;
-    padding:15px;
-    font-weight:bold;
+.resultado {
+    margin-top: 20px;
+    padding: 15px;
+    font-weight: bold;
 }
 
-footer{
-    background:#0f4c81;
-    color:white;
-    text-align:center;
-    padding:20px;
-    margin-top:40px;
+footer {
+    background: #0f4c81;
+    color: white;
+    text-align: center;
+    padding: 30px 20px;
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.footer-logo {
+    max-width: 180px;
+    height: auto;
+    display: block;
 }
 
 @media(max-width:768px){
-    .fluxo{
-        flex-direction:column;
+    .fluxo {
+        flex-direction: column;
     }
-    .arrow{
-        transform:rotate(90deg);
-        justify-content:center;
+    .arrow {
+        transform: rotate(90deg);
+        justify-content: center;
     }
 }
 </style>
@@ -378,7 +389,7 @@ Lead + OP = Indicadores mensuráveis
 <label><input type="radio" name="q3" value="1"> Canal que retomou ou amadureceu a negociação</label>
 </div>
 
-<button onclick="corrigirQuiz()">
+<button type="button" onclick="corrigirQuiz()">
 Corrigir Quiz
 </button>
 
@@ -410,24 +421,21 @@ Entrou como Lead? Conduza como Lead até a Conversão.
 </div>
 
 <footer>
-Treinamento SDR/BDR • Fluxo CRM Força de Vendas • BSA
+<img src="https://www.bertoliniarmazenagem.com.br/wp-content/uploads/2024/11/bertolini-logo-claro.svg" alt="Bertolini Armazenagem" class="footer-logo">
+<p>Treinamento SDR/BDR • Fluxo CRM Força de Vendas • BSA</p>
 </footer>
 
 <script>
-
 function corrigirQuiz(){
+    let total = 0;
 
-let total = 0;
+    if(document.querySelector('input[name="q1"]:checked')?.value == 1) total++;
+    if(document.querySelector('input[name="q2"]:checked')?.value == 1) total++;
+    if(document.querySelector('input[name="q3"]:checked')?.value == 1) total++;
 
-if(document.querySelector('input[name="q1"]:checked')?.value == 1) total++;
-if(document.querySelector('input[name="q2"]:checked')?.value == 1) total++;
-if(document.querySelector('input[name="q3"]:checked')?.value == 1) total++;
-
-document.getElementById("resultado").innerHTML =
-"Você acertou " + total + " de 3 questões.";
-
+    document.getElementById("resultado").innerHTML =
+    "Você acertou " + total + " de 3 questões.";
 }
-
 </script>
 
 </body>
